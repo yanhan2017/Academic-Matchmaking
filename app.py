@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 from neo4j_utils import Neo4jDriver, visualize_result
 from mysql_utils import SQLDriver
-import neo4j
+from mongodb_utils import MongoDriver
 
 app = Dash(__name__)
 
@@ -14,6 +14,30 @@ query1 = ("SELECT * FROM faculty "
 limit = 10
 df = sql.query_to_df(query1, [limit])
 # print(df.head())
+
+# query mongodb
+faculty_name = "Craig Zilles"
+mongo = MongoDriver()
+sample1 = mongo.db.faculty.find_one({"name": faculty_name})
+pprint.pprint(sample1['keywords'])
+
+year = 2012
+pipeline = [
+    {"$match": {"year": {"$gte": year}}},
+    {"$unwind": "$keywords"},
+    {"$group": {
+        "_id": "$keywords.name",
+        "publicationCount": {
+            "$sum": 1
+        }
+    }
+    },
+    {"$sort": {"publicationCount": -1}},
+    {"$limit": 10}
+]
+
+result = mongo.db.publications.aggregate(pipeline)
+pprint.pprint(list(result))
 
 # query neo4j and display result network on dash
 graphdb = Neo4jDriver()
