@@ -11,9 +11,7 @@ class Neo4jDriver:
         Before first use, create admin user "root" and set password to "test_root"
         Change uri if different
         """
-        self.uri = uri
-        self.user = user
-        self.password = password
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def query(self, query_str, db="academicworld", result_transformer=neo4j.Result.to_df, *args, **kwargs):
         """
@@ -27,9 +25,10 @@ class Neo4jDriver:
         :param kwargs: arguments used in the query
         :return:
         """
-        with GraphDatabase.driver(self.uri, auth=(self.user, self.password)) as driver:
-            return driver.execute_query(query_str, database_=db, result_transformer_=result_transformer, *args,
-                                        **kwargs)
+        return self.driver.execute_query(query_str, database_=db, result_transformer_=result_transformer, *args, **kwargs)
+
+    def close(self):
+        self.driver.close()
 
 
 def visualize_result(query_graph, nodes_text_properties):

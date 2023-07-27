@@ -59,6 +59,8 @@ app.layout = html.Div(children=[
     html.Iframe(srcDoc=visual_graph.html,
                 style={"height": "1067px", "width": "100%"})
 ])
+graphdb.close()
+mongo.close()
 
 # df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
 
