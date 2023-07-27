@@ -1,6 +1,8 @@
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 import pandas as pd
+import pprint
+import neo4j
 from neo4j_utils import Neo4jDriver, visualize_result
 from mysql_utils import SQLDriver
 from mongodb_utils import MongoDriver
@@ -47,7 +49,7 @@ query2 = """MATCH (CZ:FACULTY {name:$faculty_name}),
     RETURN p
     LIMIT 5"""
 graph_result = graphdb.query(query2, result_transformer=neo4j.Result.graph,
-                             faculty_name="Craig Zilles",
+                             faculty_name=faculty_name,
                              university_name="Carnegie Mellon University")
 nodes_text_properties = {  # what property to use as text for each node
     "FACULTY": "name",
