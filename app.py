@@ -11,11 +11,13 @@ app = Dash(__name__)
 
 # query mySQL
 sql = SQLDriver()
-query1 = ("SELECT * FROM faculty "
-          "LIMIT %s")
-limit = 10
-df = sql.query_to_df(query1, [limit])
-# print(df.head())
+keyword = 'machine learning'
+publication_df = sql.get_top_n_publications(keyword, 2010, 2012, 5)
+print(publication_df.head())
+top_faculty = sql.get_top_n_faculties(5)
+print(top_faculty.head())
+top_universities = sql.get_top_n_universities(5)
+print(top_universities)
 
 # query mongodb
 faculty_name = "Craig Zilles"
