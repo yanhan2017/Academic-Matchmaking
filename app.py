@@ -28,28 +28,11 @@ university_df = sql.get_top_n_universities(5)
 # TODO: display university_df in a table in second widget
 
 # query mongodb
-faculty_name = "Craig Zilles"
 mongo = MongoDriver()
-sample1 = mongo.db.faculty.find_one({"name": faculty_name})
-pprint.pprint(sample1['keywords'])
-
-year = 2012
-pipeline = [
-    {"$match": {"year": {"$gte": year}}},
-    {"$unwind": "$keywords"},
-    {"$group": {
-        "_id": "$keywords.name",
-        "publicationCount": {
-            "$sum": 1
-        }
-    }
-    },
-    {"$sort": {"publicationCount": -1}},
-    {"$limit": 10}
-]
-
-result = mongo.db.publications.aggregate(pipeline)
-pprint.pprint(list(result))
+faculty_name = "Craig Zilles"   # TODO: need to get from dropdown menu, available options are from faculty_df
+faculty_info = mongo.get_faculty(faculty_name)
+# pprint.pprint(faculty_info)
+# TODO: display faculty_info and photo in fourth widget
 
 # query neo4j and display result network on dash
 graphdb = Neo4jDriver()
@@ -58,9 +41,9 @@ query2 = """MATCH (CZ:FACULTY {name:$faculty_name}),
     p = shortestPath((CZ)-[:INTERESTED_IN*]-(f))
     RETURN p
     LIMIT 5"""
-graph_result = graphdb.query(query2, result_transformer=neo4j.Result.graph,
-                             faculty_name=faculty_name,
-                             university_name="Carnegie Mellon University")
+graph_result = graphdb.execute_command(query2, result_transformer=neo4j.Result.graph,
+                                       faculty_name=faculty_name,
+                                       university_name="Carnegie Mellon University")
 nodes_text_properties = {  # what property to use as text for each node
     "FACULTY": "name",
     "KEYWORD": "name"
