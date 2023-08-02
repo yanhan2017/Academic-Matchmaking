@@ -74,4 +74,5 @@ mongo.close()
 #     return px.line(dff, x='year', y='pop')
 
 if __name__ == '__main__':
+    # change to debug=False if cannot load page
     app.run(debug=True)

@@ -12,11 +12,12 @@ class Neo4jDriver:
         Change uri if different
         """
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        self.create_unique_name_constraint()
 
-    def query(self, query_str, db="academicworld", result_transformer=neo4j.Result.to_df, *args, **kwargs):
+    def execute_command(self, command, db="academicworld", result_transformer=neo4j.Result.to_eager_result, *args, **kwargs):
         """
 
-        :param query_str:
+        :param command:
         :param db:
         :param result_transformer:
             to dataframe: neo4j.Result.to_df
@@ -25,7 +26,26 @@ class Neo4jDriver:
         :param kwargs: arguments used in the query
         :return:
         """
-        return self.driver.execute_query(query_str, database_=db, result_transformer_=result_transformer, *args, **kwargs)
+        return self.driver.execute_query(command, database_=db, result_transformer_=result_transformer, *args, **kwargs)
+
+    def get_all_fav_faculty(self):
+        command = "MATCH (n:fav_faculty)  RETURN n.name"
+        return [record["n.name"] for record in self.execute_command(command)[0]]
+
+    def add_fav_faculty(self, name, label='fav_faculty'):
+        command = "CREATE (n:%s {name: '%s'})" % (label, name)
+        try:
+            self.execute_command(command)
+        except:
+            pass
+
+    def create_unique_name_constraint(self, label="fav_faculty"):
+        command = """
+            CREATE CONSTRAINT unique_name IF NOT EXISTS 
+            FOR (n:%s)
+            REQUIRE n.name IS UNIQUE
+        """ % label
+        self.execute_command(command)
 
     def close(self):
         self.driver.close()
