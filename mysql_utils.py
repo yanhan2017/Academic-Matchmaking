@@ -6,15 +6,41 @@ class SQLDriver:
 
     def __init__(self, user='root', passwd='test_root', database='academicworld'):
         self.cnx = mysql.connector.connect(user=user, passwd=passwd, database=database)
+        self.create_publication_year_index()
 
     def execute_command(self, command, params=None):
         cursor = self.cnx.cursor()
         cursor.execute(command, params)
         return cursor
+
     def query_to_df(self, query_str, params=None):
         cursor = self.execute_command(query_str, params)
         df = pd.DataFrame(cursor.fetchall(), columns=[x[0] for x in cursor.description])
         return df
+
+    def create_publication_year_index(self):
+        command = (
+            "SELECT 1 "
+            "FROM INFORMATION_SCHEMA.STATISTICS "
+            "WHERE INDEX_NAME = 'publication_year'"
+        )
+        cursor = self.execute_command(command)
+        # create index if it doesn't exist
+        if not cursor.fetchone():
+            command = ("CREATE INDEX publication_year "
+                       "ON publication (year)")
+            self.execute_command(command)
+
+    def get_popular_keywords(self, n=300):
+        query = (
+            "SELECT name FROM keyword, publication_keyword "
+            "WHERE publication_keyword.keyword_id = id "
+            "GROUP BY id "
+            "ORDER BY COUNT(*) DESC "
+            "LIMIT %s"
+        )
+        cursor = self.execute_command(query, [n])
+        return [x[0] for x in cursor.fetchall()]
 
     def get_top_n_publications(self, keyword, year_lower, year_upper, n=5):
         create_view = (
@@ -43,8 +69,7 @@ class SQLDriver:
             "FROM publication_score, faculty, faculty_publication AS fp "
             "WHERE faculty.id = fp.faculty_Id "
             "AND publication_score.id = fp.publication_Id "
-            "GROUP BY faculty.id "
-            "ORDER BY SUM(publication_score.KRC) DESC ")
+            "GROUP BY faculty.id ")
         self.execute_command(create_view)
         query = ("SELECT name, KRC "
                  "FROM faculty_score "
@@ -58,8 +83,7 @@ class SQLDriver:
             "SELECT university.id, university.name, university.photo_url, SUM(faculty_score.KRC) AS KRC "
             "FROM faculty_score, university "
             "WHERE university.id = faculty_score.university_id "
-            "GROUP BY university.id "
-            "ORDER BY SUM(faculty_score.KRC) DESC ")
+            "GROUP BY university.id ")
         self.execute_command(create_view)
 
         query = ("SELECT name, KRC "

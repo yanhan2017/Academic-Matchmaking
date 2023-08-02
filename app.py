@@ -11,13 +11,21 @@ app = Dash(__name__)
 
 # query mySQL
 sql = SQLDriver()
-keyword = 'machine learning'
-publication_df = sql.get_top_n_publications(keyword, 2010, 2012, 5)
-print(publication_df.head())
-top_faculty = sql.get_top_n_faculties(5)
-print(top_faculty.head())
-top_universities = sql.get_top_n_universities(5)
-print(top_universities)
+popular_keywords = sql.get_popular_keywords()
+# print(popular_keywords[:10])
+keyword = 'machine learning'    # TODO: need to get from dropdown menu, available options are popular_keywords
+year_lower = 2010   # TODO: need to get from range slider
+year_upper = 2012   # TODO: need to get from range slider
+publication_df = sql.get_top_n_publications(keyword, year_lower, year_upper, 5)
+# print(publication_df.head())
+# TODO: display publication_df in a table in first widget
+
+faculty_df = sql.get_top_n_faculties(5)
+# print(faculty_df.head())
+# TODO: display faculty_df in a table in third widget
+university_df = sql.get_top_n_universities(5)
+# print(university_df)
+# TODO: display university_df in a table in second widget
 
 # query mongodb
 faculty_name = "Craig Zilles"
