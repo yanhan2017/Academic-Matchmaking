@@ -28,12 +28,34 @@ class Neo4jDriver:
         """
         return self.driver.execute_query(command, database_=db, result_transformer_=result_transformer, *args, **kwargs)
 
+    def get_co_author_graph(self, start):
+        command = """MATCH (start:FACULTY {name:'%s'}),
+        (fav:fav_faculty),
+        p = shortestPath((start)-[pub:PUBLISH*]-(f:FACULTY))
+        WHERE f.name = fav.name
+        RETURN p
+        LIMIT 5""" % start
+        graph_result = self.execute_command(command, result_transformer=neo4j.Result.graph)
+        # print(graph_result.nodes)
+        nodes_text_properties = {  # what property to use as text for each node
+            "FACULTY": "name",
+            "PUBLICATION": "title"
+        }
+        return visualize_result(graph_result, nodes_text_properties)
+
     def get_all_fav_faculty(self):
-        command = "MATCH (n:fav_faculty)  RETURN n.name"
+        command = "MATCH (n:fav_faculty) RETURN n.name"
         return [record["n.name"] for record in self.execute_command(command)[0]]
 
     def add_fav_faculty(self, name, label='fav_faculty'):
         command = "CREATE (n:%s {name: '%s'})" % (label, name)
+        try:
+            self.execute_command(command)
+        except:
+            pass
+
+    def delete_fav_faculty(self, name, label='fav_faculty'):
+        command = "MATCH (n:%s {name: '%s'}) DELETE n" % (label, name)
         try:
             self.execute_command(command)
         except:
@@ -75,35 +97,3 @@ def visualize_result(query_graph, nodes_text_properties):
     visual_graph.write_html('network.html')
     return visual_graph
 
-
-if __name__ == "__main__":
-    pass
-    # Examples:
-    # graphdb = Neo4jDriver()
-    # query1 = """
-    # MATCH (f1:FACULTY)-[p1:PUBLISH]->(pub:PUBLICATION)<-[p2:PUBLISH]-(f2:FACULTY),
-    # (f1:FACULTY)-[a1:AFFILIATION_WITH]->(u1:INSTITUTE {name: $university_name}),
-    # (f2:FACULTY)-[a2:AFFILIATION_WITH]->(u2:INSTITUTE)
-    # WHERE u2.name <> $university_name
-    # RETURN u2.name AS University, COUNT(DISTINCT f1) AS count
-    # ORDER BY count DESC
-    # LIMIT 10
-    # """
-    # db_result = graphdb.query(query1, university_name="University of illinois at Urbana Champaign")
-    # print(db_result)
-    #
-    # query2 = """MATCH (CZ:FACULTY {name:$faculty_name}),
-    # (f:FACULTY)-[:AFFILIATION_WITH]->(i:INSTITUTE {name: $university_name}),
-    # p = shortestPath((CZ)-[:INTERESTED_IN*]-(f))
-    # RETURN p
-    # LIMIT 5"""
-    # graph_result = graphdb.query(query2, result_transformer=neo4j.Result.graph,
-    #                              faculty_name="Craig Zilles",
-    #                              university_name="Carnegie Mellon University")
-    # nodes_text_properties = {
-    #     "FACULTY": "name",
-    #     "KEYWORD": "name"
-    # }
-    # visualize_result(graph_result, nodes_text_properties)
-    # graphdb.close()
-    #

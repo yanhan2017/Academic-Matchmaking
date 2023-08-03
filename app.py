@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 import pprint
 import neo4j
+import random
 from neo4j_utils import Neo4jDriver, visualize_result
 from mysql_utils import SQLDriver
 from mongodb_utils import MongoDriver
@@ -36,19 +37,20 @@ faculty_info = mongo.get_faculty(faculty_name)
 
 # query neo4j and display result network on dash
 graphdb = Neo4jDriver()
-query2 = """MATCH (CZ:FACULTY {name:$faculty_name}),
-    (f:FACULTY)-[:AFFILIATION_WITH]->(i:INSTITUTE {name: $university_name}),
-    p = shortestPath((CZ)-[:INTERESTED_IN*]-(f))
-    RETURN p
-    LIMIT 5"""
-graph_result = graphdb.execute_command(query2, result_transformer=neo4j.Result.graph,
-                                       faculty_name=faculty_name,
-                                       university_name="Carnegie Mellon University")
-nodes_text_properties = {  # what property to use as text for each node
-    "FACULTY": "name",
-    "KEYWORD": "name"
-}
-visual_graph = visualize_result(graph_result, nodes_text_properties)
+faculty_names = faculty_df['name'].values.tolist()
+for name in faculty_names:
+    graphdb.add_fav_faculty(name)   # TODO: need user manually add fav_faculty from dropdown menu
+
+fav_faculty = graphdb.get_all_fav_faculty()
+start_faculty_name = fav_faculty[0]     # TODO: need to get from user
+
+# TODO: add refresh button on webpage to regenerate graph to reflect the most recent fav_faculty list
+visual_graph = graphdb.get_co_author_graph(start_faculty_name)
+
+for _ in range(3):
+    fav_faculty = graphdb.get_all_fav_faculty()
+    graphdb.delete_fav_faculty(random.choice(fav_faculty))
+
 
 app.layout = html.Div(children=[
     html.Iframe(srcDoc=visual_graph.html,
