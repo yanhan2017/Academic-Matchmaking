@@ -42,7 +42,7 @@ class Neo4jDriver:
             "FACULTY": "name",
             "PUBLICATION": "title"
         }
-        return visualize_result(graph_result, nodes_text_properties)
+        return visualize_result(graph_result, nodes_text_properties, start)
 
     def get_all_fav_faculty(self):
         command = "MATCH (n:fav_faculty) RETURN n.name"
@@ -74,19 +74,25 @@ class Neo4jDriver:
         self.driver.close()
 
 
-def visualize_result(query_graph, nodes_text_properties):
+def visualize_result(query_graph, nodes_text_properties, start):
     """
 
+    :param start:
     :param query_graph:
     :param nodes_text_properties: dictionary indicating what property to use as text for each node
     :return:
     """
     visual_graph = pyvis.network.Network()
-
+    start_node_id = start_node_text = None
     for node in query_graph.nodes:
         node_label = list(node.labels)[0]
         node_text = node[nodes_text_properties[node_label]]
-        visual_graph.add_node(node.element_id, node_text, group=node_label)
+        if node_text == start:
+            start_node_id = node.element_id
+            start_node_text = node[nodes_text_properties[node_label]]
+        else:
+            visual_graph.add_node(node.element_id, node_text, group=node_label)
+    visual_graph.add_node(start_node_id, start_node_text, group="start")
 
     for relationship in query_graph.relationships:
         visual_graph.add_edge(
