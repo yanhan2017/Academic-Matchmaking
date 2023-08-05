@@ -36,8 +36,8 @@ def create_widget_five(graphdb):
         html.Label('Delete favorite faculty'),
         dcc.Dropdown(id='delete_input'),
         html.Br(),
-        dash_table.DataTable(columns=[{"name": "Faculty Name", "id": "n.name"}],
-                             id='fav_faculty_table')
+        dash_table.DataTable(columns=[{"name": "Favorited Faculty", "id": "n.name"}],
+                             id='fav_faculty_table', style_header={'textAlign': 'center'})
     ], style={"height": "100%", "width": "20%"})
 
 
@@ -50,7 +50,8 @@ def create_widget_six(graphdb):
     )
     def create_visual_graph(advisor_input):
         if advisor_input is None:
-            return html.Div("Choose your advisor to display graph")
+            return html.Div("Choose your advisor to display graph",
+                            style={"color": "gray", "text-align": "center", "padding": "10% 0%"})
         return html.Iframe(srcDoc=graphdb.get_co_author_graph(advisor_input).html,
                            style={"height": "100%", "width": "100%", "border": "none"})
 
