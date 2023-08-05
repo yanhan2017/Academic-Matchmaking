@@ -44,8 +44,15 @@ class Neo4jDriver:
         }
         return visualize_result(graph_result, nodes_text_properties, start)
 
-    def get_all_fav_faculty(self):
+    def get_all_fav_faculty(self, to_list=False):
         command = "MATCH (n:fav_faculty) RETURN n.name"
+        if to_list:
+            return [record["n.name"] for record in self.execute_command(command)[0]]
+        else:
+            return self.execute_command(command, result_transformer=neo4j.Result.to_df)
+
+    def get_all_faculty(self):
+        command = "MATCH (n:FACULTY) RETURN n.name"
         return [record["n.name"] for record in self.execute_command(command)[0]]
 
     def add_fav_faculty(self, name, label='fav_faculty'):
