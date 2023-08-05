@@ -33,6 +33,7 @@ class Neo4jDriver:
         (fav:fav_faculty),
         p = shortestPath((start)-[pub:PUBLISH*]-(f:FACULTY))
         WHERE f.name = fav.name
+        AND start.name <> f.name
         RETURN p
         LIMIT 5""" % start
         graph_result = self.execute_command(command, result_transformer=neo4j.Result.graph)
