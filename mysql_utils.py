@@ -55,7 +55,7 @@ class SQLDriver:
             "GROUP BY publication.id ")
         self.execute_command(create_view, [year_upper, year_lower, keyword])
 
-        query = ("SELECT title, KRC "
+        query = ("SELECT title AS Title, year AS Year, KRC AS Score "
                  "FROM publication_score "
                  "ORDER BY KRC DESC "
                  "LIMIT %s")
@@ -71,8 +71,9 @@ class SQLDriver:
             "AND publication_score.id = fp.publication_Id "
             "GROUP BY faculty.id ")
         self.execute_command(create_view)
-        query = ("SELECT name, KRC "
-                 "FROM faculty_score "
+        query = ("SELECT faculty_score.name AS Name, university.name AS University, KRC AS Score "
+                 "FROM faculty_score, university "
+                 "WHERE university.id = faculty_score.university_id "
                  "ORDER BY KRC DESC "
                  "LIMIT %s")
         return self.query_to_df(query, [n])
@@ -86,7 +87,7 @@ class SQLDriver:
             "GROUP BY university.id ")
         self.execute_command(create_view)
 
-        query = ("SELECT name, KRC "
+        query = ("SELECT name AS University, KRC AS Score "
                  "FROM university_score "
                  "ORDER BY KRC DESC "
                  "LIMIT %s")
