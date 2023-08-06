@@ -80,12 +80,12 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
             dcc.Dropdown(popular_keywords, value=popular_keywords[0], style={'color': 'black'},
                          id='kw_dropdown')
             ], style={'padding': 15, 'flex': 1, 'font-size': 20}),
-       
+
         # Year & Range
         html.Div([
             html.Label('Choose Your Interested Year Range ', style={'textAlign': 'center', 'color': colors['text']}),
             html.Br(),
-            dcc.RangeSlider(1903, 2021, 1, marks=None,  
+            dcc.RangeSlider(1903, 2021, 1, marks=None,
                             value=[1978, 2000], tooltip={"placement": "bottom", "always_visible": True},
                             id='year_slider')
             ], style={'padding': 15, 'flex': 1, 'font-size': 20}),
@@ -97,26 +97,26 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
             html.Button('Explore!', id='submit_choices', n_clicks=0, style={'height': '100px', 'width': '100px'})
             ], style={'padding': 15, 'flex': 1, 'font-size': 20}),
 
-    ], style={'display': 'flex', 'flex-direction': 'row'}), 
+    ], style={'display': 'flex', 'flex-direction': 'row'}),
 
     html.Br(),
 
-    # Widgets 1 & 2 - Top Publications and Universitiesfor the Users' Inputs in Widget 0    
+    # Widgets 1 & 2 - Top Publications and Universitiesfor the Users' Inputs in Widget 0
     html.Div(children=[
-        # Widget 1 - Top Publications Title, 
+        # Widget 1 - Top Publications Title,
         html.Label('Top Publications', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
         dash_table.DataTable(data=publication_df.to_dict('records'), id='top_pub',
-                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 13}, 
+                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 13},
                              style_header={
                                 'backgroundColor': 'white',
                                 'fontWeight': 'bold'},
                              style_table={'width': '10%', 'padding': 10, 'flex': 1},
                              ),
-            
-        # Widget 2 - Top Universities Info 
+
+        # Widget 2 - Top Universities Info
         html.Label('Top Universities', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
         dash_table.DataTable(data=university_df.to_dict('records'), id='top_uni',
-                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 16}, 
+                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 16},
                              style_header={
                                 'backgroundColor': 'white',
                                 'fontWeight': 'bold'},
@@ -142,7 +142,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
 
         # Widget 4 - Choosing Users' Favorite Professor from Widget 3 to See Their Info
         # Dropdown Menu to Choose Professors from Widget
-        html.Div(children=[   
+        html.Div(children=[
             html.Label('Choose Your Top Professor', style={'textAlign': 'center', 'color': colors['text']}),
             html.Br(),
             dcc.Dropdown(options=faculty_df['Name'], value=faculty_df['Name'].iat[0], style={'color': 'black'},
@@ -162,11 +162,11 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
             dcc.Graph(figure=fig, id='fac_img', style={'height': '450px', 'width': '450px'})
         ], style={'width': '75%', 'padding': 15}),
 
-    ], style={'display': 'flex', 'flex-direction': 'row', 'font-size': 20}), 
+    ], style={'display': 'flex', 'flex-direction': 'row', 'font-size': 20}),
 
     html.Br(),
 
-    # Widget 5 & 6 - 
+    # Widget 5 & 6 -
     html.Div(children=[
         # Widget 5 - Letting Users Add/Delete Favorite Professors in a New Table
         html.Div(children=[create_widget_five(graphdb)]),
@@ -229,8 +229,8 @@ def update_fav_fac(value):
         fig.update_layout(coloraxis_showscale=False)
         fig.update_xaxes(showticklabels=False)
         fig.update_yaxes(showticklabels=False)
-   
-    return 'Name: %s' % faculty_info['name'], 'University: %s' % faculty_info['affiliation']['name'], 'Position: %s' % faculty_info['position'], fig 
+
+    return 'Name: %s' % faculty_info['name'], 'University: %s' % faculty_info['affiliation']['name'], 'Position: %s' % faculty_info['position'], fig
 
 
 if __name__ == '__main__':
