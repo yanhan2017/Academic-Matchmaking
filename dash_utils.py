@@ -1,5 +1,11 @@
 from dash import html, dcc, Input, Output, callback, dash_table, ctx
 
+colors = {
+    'background': '#111111',
+    'text': '#d3d3d3',
+    'header': '#7FDBFF'
+}
+
 
 def create_widget_five(graphdb):
     all_faculty_list = graphdb.get_all_faculty()
@@ -30,15 +36,18 @@ def create_widget_five(graphdb):
             graphdb.delete_fav_faculty(delete_faculty)
 
     return html.Div(children=[
-        html.Label('Add favorite faculty'),
+        html.Label('Add favorite faculty', style={'textAlign': 'center', 'color': colors['text']}),
         dcc.Dropdown(all_faculty_list, id='add_input'),
         html.Br(),
-        html.Label('Delete favorite faculty'),
+        html.Label('Delete favorite faculty', style={'textAlign': 'center', 'color': colors['text']}),
         dcc.Dropdown(id='delete_input'),
         html.Br(),
         dash_table.DataTable(columns=[{"name": "Favorited Faculty", "id": "n.name"}],
-                             id='fav_faculty_table', style_header={'textAlign': 'center'})
-    ], style={"height": "100%", "width": "20%"})
+                             id='fav_faculty_table',
+                             style_header={'textAlign': 'center','backgroundColor': 'white','fontWeight': 'bold'},
+                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto'},
+                             )
+    ], style={"height": "100%", "width": "55%", 'padding': '10px'})
 
 
 def create_widget_six(graphdb):
@@ -51,14 +60,17 @@ def create_widget_six(graphdb):
     def create_visual_graph(advisor_input):
         if advisor_input is None:
             return html.Div("Choose your advisor to display graph",
-                            style={"color": "gray", "text-align": "center", "padding": "10% 0%"})
+                            style={"color": "gray", "text-align": "center", "padding": 15})
         return html.Iframe(srcDoc=graphdb.get_co_author_graph(advisor_input).html,
-                           style={"height": "100%", "width": "100%", "border": "none"})
+                           style={"height": "700px", "width": "220%", "border": "none"})
 
     return html.Div(children=[
-                        html.Label('Choose your advisor'),
-                        dcc.Dropdown(all_faculty_list, id='advisor_input'),
-                        html.Br(),
-                        html.Label('Co-authorship graph'),
-                        html.Div(id='graph_output', style={"height": "100%", "width": "100%"})],
-                    style={"position": "absolute", "left": "25%", "top": "0.5%", "height": "100%", "width": "80%"})
+        html.Label('Choose your advisor', style={'textAlign': 'center', 'color': colors['text']}),
+        dcc.Dropdown(all_faculty_list, id='advisor_input'),                
+        html.Br(),              
+        html.Label('Co-authorship graph', style={'textAlign': 'center', 'color': colors['text']}),              
+        html.Div(id='graph_output', style={"height": "100%", "width": "100%"}),
+
+        ], style={'width': '40%', 'padding': '10px 385px'})
+
+# style={"position": "absolute", "left": "25%", "top": "0.5%", "height": "100%", "width": "80%"})
