@@ -50,4 +50,4 @@ mongo.close()
 
 if __name__ == '__main__':
     # change to debug=False if cannot load page
-    app.run(debug=True)
+    app.run(debug=False)
