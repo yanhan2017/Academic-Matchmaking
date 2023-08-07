@@ -1,10 +1,6 @@
 from dash import Dash, html, dcc, callback, Output, Input, State, dash_table, ctx
 import plotly.express as px
-import pandas as pd
-import pprint
-import neo4j
-import random
-from neo4j_utils import Neo4jDriver, visualize_result
+from neo4j_utils import Neo4jDriver
 from mysql_utils import SQLDriver
 from mongodb_utils import MongoDriver
 from PIL import Image
@@ -16,26 +12,19 @@ app = Dash(__name__)
 colors = {
     'background': '#111111',
     'text': '#d3d3d3',
-    'header': '#7FDBFF'
+    "header": '#BFC9CA'
 }
 
 # query mySQL
 sql = SQLDriver()
 popular_keywords = sql.get_popular_keywords()
-# print(popular_keywords[:10])
 keyword = 'machine learning'    # TODO: need to get from dropdown menu, available options are popular_keywords
 year_lower = 2010   # TODO: need to get from range slider
 year_upper = 2012   # TODO: need to get from range slider
 publication_df = sql.get_top_n_publications(keyword, year_lower, year_upper, 5)
-# print(publication_df.head())
-# TODO: display publication_df in a table in first widget
 
 faculty_df = sql.get_top_n_faculties(5)
-# print(faculty_df.head())
-# TODO: display faculty_df in a table in third widget
 university_df = sql.get_top_n_universities(5)
-# print(university_df)
-# TODO: display university_df in a table in second widget
 
 # query mongodb
 mongo = MongoDriver()
@@ -56,18 +45,10 @@ except Exception as e:
     fig.update_layout(coloraxis_showscale=False)
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
-# pprint.pprint(faculty_info)
-# TODO: display faculty_info and photo in fourth widget
 
 # query neo4j and display result network on dash
 graphdb = Neo4jDriver()
-faculty_names = faculty_df['Name'].values.tolist()
-for name in faculty_names:
-    graphdb.add_fav_faculty(name)   # TODO: need user manually add fav_faculty from dropdown menu
-
-
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
-
     # Main Header of the Web
     html.Div([html.H1('Find Your Closest Academic Advisor', style={'textAlign': 'center', 'color': colors['header'], 'font-size': 40})]),
 
@@ -189,7 +170,6 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     [State(component_id='kw_dropdown', component_property='value'),
     State(component_id='year_slider', component_property='value')]
 )
-
 def update_kw_output(n_clicks, kw_dropdown, year_slider):
     if n_clicks > 0:
         publication_df = sql.get_top_n_publications(kw_dropdown, year_slider[0], year_slider[1], 5)
@@ -202,18 +182,17 @@ def update_kw_output(n_clicks, kw_dropdown, year_slider):
     Output(component_id='fac_dropdown', component_property='options'),
     [Input(component_id='top_fac', component_property='data')],
 )
-
 def update_fac_dropdown(top_fac):
     return [d['Name'] for d in top_fac]
 
 @callback(
-    [Output(component_id='fac_name', component_property='children'),
+    Output(component_id='fac_name', component_property='children'),
     Output(component_id='uni_name', component_property='children'),
     Output(component_id='fac_pos', component_property='children'),
-    Output(component_id='fac_img', component_property='figure')],
+    Output(component_id='fac_img', component_property='figure'),
     [Input(component_id='fac_dropdown', component_property='value')],
+    prevent_initial_call=True
 )
-
 def update_fav_fac(value):
     faculty_info = mongo.get_faculty(value)
     url = faculty_info['photoUrl']
@@ -230,12 +209,13 @@ def update_fav_fac(value):
         fig.update_xaxes(showticklabels=False)
         fig.update_yaxes(showticklabels=False)
 
-    return 'Name: %s' % faculty_info['name'], 'University: %s' % faculty_info['affiliation']['name'], 'Position: %s' % faculty_info['position'], fig
+    return 'Name: %s' % faculty_info['name'], 'University: %s' % faculty_info['affiliation']['name'], \
+        'Position: %s' % faculty_info['position'], fig
 
 
 if __name__ == '__main__':
     # change to debug=False if cannot load page
     app.run(debug=False)
+    graphdb.close()
+    mongo.close()
 
-graphdb.close()
-mongo.close()
