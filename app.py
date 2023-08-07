@@ -50,13 +50,15 @@ except Exception as e:
 graphdb = Neo4jDriver()
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     # Main Header of the Web
-    html.Div([html.H1('Find Your Closest Academic Advisor', style={'textAlign': 'center', 'color': colors['header'], 'font-size': 40})]),
+    html.Br(),
+    html.Div([html.H1('Academic Matchmaking: Find Your Academic Advisor', style={'textAlign': 'center', 'color': colors['header'], 'font-size': 40})]),
+    html.Br(),
 
     # Widget 0 - Dropdown Menu for Users to Choose Keywords + Year Range Slider
     html.Div(children=[
         # Dropdown Menu
         html.Div([
-            html.Label('Choose Your Interested Keywords ', style={'textAlign': 'center', 'color': colors['text']}),
+            html.Label('Choose Your Keyword ', style={'textAlign': 'center', 'color': colors['text']}),
             html.Br(),
             dcc.Dropdown(popular_keywords, value=popular_keywords[0], style={'color': 'black'},
                          id='kw_dropdown')
@@ -75,7 +77,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
         html.Div([
             html.Label('See Your Top publications, Universities, and Faculties', style={'textAlign': 'center', 'color': colors['text']}),
             html.Br(),
-            html.Button('Explore!', id='submit_choices', n_clicks=0, style={'height': '100px', 'width': '100px'})
+            html.Button('Explore!', id='submit_choices', n_clicks=0, style={'height': '50px', 'width': '100px'})
             ], style={'padding': 15, 'flex': 1, 'font-size': 20}),
 
     ], style={'display': 'flex', 'flex-direction': 'row'}),
@@ -85,17 +87,19 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     # Widgets 1 & 2 - Top Publications and Universitiesfor the Users' Inputs in Widget 0
     html.Div(children=[
         # Widget 1 - Top Publications Title,
-        html.Label('Top Publications', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
+        html.Div([html.Label('Top Publications', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
+          html.Br(),
         dash_table.DataTable(data=publication_df.to_dict('records'), id='top_pub',
                              style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 13},
                              style_header={
                                 'backgroundColor': 'white',
                                 'fontWeight': 'bold'},
                              style_table={'width': '10%', 'padding': 10, 'flex': 1},
-                             ),
+                             )], style={"flex": '0 0 60%'}),
 
         # Widget 2 - Top Universities Info
-        html.Label('Top Universities', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
+        html.Div([html.Label('Top Universities', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
+                  html.Br(),
         dash_table.DataTable(data=university_df.to_dict('records'), id='top_uni',
                              style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto', 'font-size': 16},
                              style_header={
@@ -111,37 +115,37 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     # Widget 3 & 4 - Top Faculties and Their Info from Users' Inputs in Widget 0
     html.Div(children=[
         # Widget 3 - Top Faculties Info
-        html.Label('Top Faculties', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
-        html.Br(),
-        dash_table.DataTable(data=faculty_df.to_dict('records'), id='top_fac',
-                             style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto'},
-                             style_header={
-                                 'backgroundColor': 'white',
-                                 'fontWeight': 'bold'},
-                             style_table={'width': '95%', 'padding': 15, 'flex': 1}
-                             ),
+        html.Div([html.Label('Top Faculties', style={'textAlign': 'center', 'color': colors['text'], 'padding': 15}),
+            html.Br(),
+            dash_table.DataTable(data=faculty_df.to_dict('records'), id='top_fac',
+                                 style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto'},
+                                 style_header={
+                                     'backgroundColor': 'white',
+                                     'fontWeight': 'bold'},
+                                 style_table={'width': '95%', 'padding': 15, 'flex': 1}
+                                 )], style={"flex": '0 0 60%'}),
 
         # Widget 4 - Choosing Users' Favorite Professor from Widget 3 to See Their Info
         # Dropdown Menu to Choose Professors from Widget
-        html.Div(children=[
-            html.Label('Choose Your Top Professor', style={'textAlign': 'center', 'color': colors['text']}),
-            html.Br(),
-            dcc.Dropdown(options=faculty_df['Name'], value=faculty_df['Name'].iat[0], style={'color': 'black'},
-                         id='fac_dropdown'),
-        ], style={'width': '75%', 'padding': 15}),
+        html.Div(
+            [html.Div(children=[
+                    html.Label('Choose Your Top Professor', style={'textAlign': 'center', 'color': colors['text']}),
+                    dcc.Dropdown(options=faculty_df['Name'], value=faculty_df['Name'].iat[0], style={'color': 'black'},
+                                 id='fac_dropdown'),
+                ], style={'width': '75%', 'padding': 15}),
 
-         html.Br(),
-
-        # Faculty Info of User-Chosen Faculty
-        html.Div(children=[
-            html.Label('Name: %s' % faculty_info['name'], id='fac_name', style={'textAlign': 'center', 'color': colors['text']}),
-            html.Br(),
-            html.Label('University: %s' % faculty_info['affiliation']['name'], id='uni_name', style={'textAlign': 'center', 'color': colors['text']}),
-            html.Br(),
-            html.Label('Position: %s' % faculty_info['position'], id='fac_pos', style={'textAlign': 'center', 'color': colors['text']}),
-            html.Br(),
-            dcc.Graph(figure=fig, id='fac_img', style={'height': '450px', 'width': '450px'})
-        ], style={'width': '75%', 'padding': 15}),
+            # Faculty Info of User-Chosen Faculty
+            html.Div(children=[
+                html.Label('Name: %s' % faculty_info['name'], id='fac_name', style={'textAlign': 'center', 'color': colors['text']}),
+                html.Br(),
+                html.Label('University: %s' % faculty_info['affiliation']['name'], id='uni_name', style={'textAlign': 'center', 'color': colors['text']}),
+                html.Br(),
+                html.Label('Position: %s' % faculty_info['position'], id='fac_pos', style={'textAlign': 'center', 'color': colors['text']}),
+                html.Br(),
+                dcc.Graph(figure=fig, id='fac_img',
+                          style={'height': '450px', 'width': '450px'}
+                          )
+            ], style={'width': '75%', 'padding': 15})], style={"flex": '0 0 40%'}),
 
     ], style={'display': 'flex', 'flex-direction': 'row', 'font-size': 20}),
 
@@ -149,13 +153,8 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
 
     # Widget 5 & 6 -
     html.Div(children=[
-        # Widget 5 - Letting Users Add/Delete Favorite Professors in a New Table
-        html.Div(children=[create_widget_five(graphdb)]),
-
-        html.Br(),
-
-        # Widget 6 - Letting Users Choose their Ideal Advisors
-        html.Div(children=[create_widget_six(graphdb)])
+        create_widget_five(graphdb),
+        create_widget_six(graphdb)
 
     ], style={'display': 'flex', 'flex-direction': 'row', 'font-size': 20})
 
