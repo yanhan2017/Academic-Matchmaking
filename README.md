@@ -1,4 +1,4 @@
-# Matching Your Favorite Academic Advisors!
+# Academic Matchmaking: Find Your Academic Advisor!
 by Team Jake_Yan
 
 ## 1. Purpose
