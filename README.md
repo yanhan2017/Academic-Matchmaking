@@ -115,4 +115,4 @@ If the constraint is violated when adding a new favorite faculty, the applicatio
 Most backend utilities, frontend of widgets 5 and 6, README. Total time spent is about 40 hours.
 
 ### *Jake*:
-Most frontend widgets, integrating widgets into dashboard，README, demo video. Total time spent is about 25 hours.
+Most frontend widgets, integrating widgets into dashboard, README, demo video. Total time spent is about 25 hours.
