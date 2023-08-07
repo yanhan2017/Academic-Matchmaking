@@ -22,7 +22,7 @@ Students who are applying for graduate schools and looking for potential advisor
 ## 2. Demo
 Please check [this link] for a demo. 
 
-[this link]: http://python.land
+[this link]: https://mediaspace.illinois.edu/media/t/1_zibc66dw
 
 ## 3. Installation
 Before using this application, you need to have Python 3 installed and the academicworld database populated and running on MySQL, MongoDB and Neo4j. The following libraries are also needed:
