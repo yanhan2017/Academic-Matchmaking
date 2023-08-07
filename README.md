@@ -25,7 +25,7 @@ Please check [this link] for a demo.
 [this link]: http://python.land
 
 ## 3. Installation
-Before using this application, you need to have the academicworld database populated and running on MySQL, MongoDB and Neo4j. The following libraries are also needed:
+Before using this application, you need to have Python 3 installed and the academicworld database populated and running on MySQL, MongoDB and Neo4j. The following libraries are also needed:
 - dash
 - pandas
 - mysql
