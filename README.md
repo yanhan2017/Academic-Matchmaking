@@ -4,25 +4,16 @@ by Team Jake_Yan
 ## 1. Purpose
 ### *Application Scenario*: 
 This application is intended to help students choose their ideal advisors when applying for graduate school based on their research interests.
-The dashboard tool links to the database “academicworld”, which has keyword-relevant-citation score (KRC) and the co-authorship relation of certain publications
-between various professors as crucial indicators of how the publications, institutions, and professors are relevant to the students’ prompted research interests.
-This relevancy is represented by the top results in terms of KRC, and a node graph showing how “far” the professors are from each other associated with co-authored publications.
-
-These materials aim to help the students make a better informed decision on choosing the appropriate mentors, and to help them see the chances of having better shots at certain interested labs. 
 
 ### *Target Users*: 
-Students who are applying for graduate schools and looking for potential advisors whose works are “close enough” to their interested areas of expertise so that 
-they can provide guidance at different stages of those students’ academic careers.
-
-Students might have already been familiar with/have recommendations from a couple of professors in their academic careers, so this app can also help them make a better decision 
-on picking up advisors by adding their favorite professors to see how they are connected to the ones whom they have been acquainted with via the node graph.
+Students who are applying for graduate schools and looking for potential advisors whose works are related to their interested areas.
 
 ### *Objectives*:
-- Let grad students quickly pinpoint their desired scholars for mentorship in a specific area of academic pursuit, ordered by publications’ and their affiliated institutions’ KRC.
+- Let students quickly narrowdown pubications, universities and scholars in a specific academic area.
 
-- Feasibilities of freely editing and recording the outputs for different professors to let the students fully try out for a plethora of choices.
+- Feasibilities of saving a list of favorite professors to explore later.
 
-- Graphic representation of scholars’ inter-relations via co-authored publications for a better tracing view of how close the students’ chosen professors are to their acquainted ones/recommenders.
+- Graphic representation to show how close the student is to their favorite professors through co-authorship.
 
 - Allowing the students to have access to a large and centralized database without concern about the connection intricacies and can directly query the database by clicking, adding, and deleting dropdown menu items. 
 
@@ -41,6 +32,8 @@ Before using this application, you need to have the academicworld database popul
 - pymongo
 - Neo4j
 - pyvis
+- plotly
+- pillow
 
 If your username, password or port number is different from the default for the databases, specify them in app.py when initializing each database class.
 
@@ -59,7 +52,7 @@ The basic information about top publications, universities and faculties are the
 
 ### *The Fourth Widget: Faculty Info on a Particular Professor*
 If users want to get more information about a particular faculty they are interested in, they can choose a faculty from the dropdown menu on top of the fourth widget, 
-then it will display information about the faculty such as affiliations and position/title, along with his or her photo.
+then it will display information about the faculty such as affiliations and position/title, along with their photo.
 
 ### *The Fifth Widget: Add/Delete User’s Favorite Professors in a Table*
 The fifth widget allows the users to add and delete their favorite faculties in a temperate table. Duplicated ones are not allowed. Then they can see how close they are related
@@ -116,3 +109,6 @@ We added a UNIQUE constraint on the Neo4j database requiring that each fav_facul
 If the constraint is violated when adding a new favorite faculty, the application will simply ignore the request.
 
 ## 8. Contributions
+### *Yan*: 
+Most backend utilities, frontend of widgets 5 and 6, README. Total time spent is about 40 hours.
+
