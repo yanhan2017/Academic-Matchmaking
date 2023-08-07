@@ -47,7 +47,9 @@ def create_widget_five(graphdb):
                              style_header={'textAlign': 'center','backgroundColor': 'white','fontWeight': 'bold'},
                              style_as_list_view=True, style_cell={'padding': '25px', 'width': '600px', 'overflow': 'auto'},
                              )
-    ], style={"height": "100%", "width": "55%", 'padding': '10px'})
+    ],
+        style={'width': '75%', 'padding': 15, "flex": '0 0 25%'}
+    )
 
 
 def create_widget_six(graphdb):
@@ -62,7 +64,7 @@ def create_widget_six(graphdb):
             return html.Div("Choose your advisor to display graph",
                             style={"color": "gray", "text-align": "center", "padding": 15})
         return html.Iframe(srcDoc=graphdb.get_co_author_graph(advisor_input).html,
-                           style={"height": "700px", "width": "220%", "border": "none"})
+                           style={"height": "700px", "width": "100%", "border": "none"})
 
     return html.Div(children=[
         html.Label('Choose your advisor', style={'textAlign': 'center', 'color': colors['text']}),
@@ -70,7 +72,8 @@ def create_widget_six(graphdb):
         html.Br(),              
         html.Label('Co-authorship graph', style={'textAlign': 'center', 'color': colors['text']}),              
         html.Div(id='graph_output', style={"height": "100%", "width": "100%"}),
-
-        ], style={'width': '40%', 'padding': '10px 385px'})
+        ],
+        style={'width': '75%', 'padding': 15}
+    )
 
 # style={"position": "absolute", "left": "25%", "top": "0.5%", "height": "100%", "width": "80%"})

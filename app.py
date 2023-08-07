@@ -106,7 +106,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
                                 'backgroundColor': 'white',
                                 'fontWeight': 'bold'},
                              style_table={'width': '10%', 'padding': 10, 'flex': 1},
-                             ),
+                             )], style={"flex": '0 0 40%'}),
 
     ], style={'display': 'flex', 'flex-direction': 'row', 'font-size': 20}),
 
@@ -167,7 +167,8 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     Output(component_id='top_fac', component_property='data'),
     Input(component_id='submit_choices', component_property='n_clicks'),
     [State(component_id='kw_dropdown', component_property='value'),
-    State(component_id='year_slider', component_property='value')]
+    State(component_id='year_slider', component_property='value')],
+    prevent_initial_call=True
 )
 def update_kw_output(n_clicks, kw_dropdown, year_slider):
     if n_clicks > 0:
@@ -180,6 +181,7 @@ def update_kw_output(n_clicks, kw_dropdown, year_slider):
 @callback(
     Output(component_id='fac_dropdown', component_property='options'),
     [Input(component_id='top_fac', component_property='data')],
+    prevent_initial_call=True
 )
 def update_fac_dropdown(top_fac):
     return [d['Name'] for d in top_fac]
