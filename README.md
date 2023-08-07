@@ -44,22 +44,22 @@ Then you can interact with the dashboard by choosing keywords, adding favorite f
 ## 5. Design
 The dashboard has six widgets in total.
 
-### *The First Three Widgets: Top Publications, Universities and Faculties*
+### *Widgets 1 - 3: Top Publications, Universities and Faculties*
 The first three tell users what are the top publications, faculties and universities most relevant to the keyword they are interested in.
 The user can choose a keyword from the “Choose Keyword” dropdown menu on top of the page. 
 They can also narrow down the year range using the slider bar if they don’t want all-time data.
 The basic information about top publications, universities and faculties are then displayed in tables in the first, second and third widget respectively.
 
-### *The Fourth Widget: Faculty Info on a Particular Professor*
+### *Widget 4: Faculty Info on a Particular Professor*
 If users want to get more information about a particular faculty they are interested in, they can choose a faculty from the dropdown menu on top of the fourth widget, 
 then it will display information about the faculty such as affiliations and position/title, along with their photo.
 
-### *The Fifth Widget: Add/Delete User’s Favorite Professors in a Table*
+### *Widget 5: Add/Delete Favorite Professors*
 The fifth widget allows the users to add and delete their favorite faculties in a temperate table. Duplicated ones are not allowed. Then they can see how close they are related
 to these faculties through co-authorship in the sixth widget. 
 
-### *The Sixth Widget: A Node Graph Showing the Students’ “Distance” to their Favorite Professors*
-In order to see how close the students’ current advisors are to the ones they have interest in, they need to choose their current advisor (or any faculty who can recommend them) from
+### *Widget 6: An Interactive Co-authoship Graph*
+In order to see how close the students are to their favorite faculties, they need to choose their current advisor (or any faculty who can recommend them) from
 the dropdown menu in the sixth widget, then it will display a graph showing how their advisor is connected to their favorite faculties through co-authorship.
 If the advisor is close to one of the favorite faculties, the user might have a better chance of getting into the favorite faculty’s lab.
 
@@ -67,10 +67,7 @@ If the advisor is close to one of the favorite faculties, the user might have a 
 The application is written in python. The backend uses respective python clients to query and update mySQL, MongoDB and Neo4j databases and the frontend uses Dash to
 generate a dashboard to interact with users and display query results.
 
-We used Dash to write the frontend of the application. There are dropdown menus and slider bars that receive user input
-and callback functions that update data displayed whenever the input changes.
-
-### *The First Three Widgets:*
+### *Widgets 1 - 3:*
 They query and update the mySQL database to get top publications, faculties and universities. To speedup querying, we added indexing on the year attribute of the publication table.
 The publications are first filtered by their publication year, and then their keyword-relevant citation (KRC) scores are calculated as S*C. S is the relevance score of the publication
 with the keyword specified, and C is the number of citations this publication received.
@@ -82,18 +79,23 @@ saved in the publication_score view. Faculty KRC and their basic information are
 Then faculties with the highest KRC are selected from the view and displayed in the third widget.
 Similarly, university KRC is the sum of all its faculties’ KRCs. Top universities are displayed in the second widget. 
 
-### *The Fourth Widget:*
-It queries MongoDB and outputs a dictionary of documents from the faculty collection to get more information on a particular faculty.
+### *Widget 4:*
+It queries MongoDB for information on a particular faculty whose name matches user's specification.
 It also displays the faculty’s photo if the url is available and not corrupted.
 
-### *The Fifth Widget:*
+### *Widget 5:*
 To realize the functionality of adding and deleting favorite faculties, we created a new node label in Neo4j called fav_faculty. Whenever the user adds a new favorite faculty, the database creates
 a fav_faculty node with the faculty name. Similarly, when a user deletes a favorite faculty, the fav_faculty node with matching name is deleted from the database. To avoid duplicated favorite faculties,
 we added a UNIQUE constraint on fav_faculty’s “name” property. If a user tries to add a faculty that’s already been favorited, the database will simply ignore the request.
 
-### *The Sixth Widget:*
+### *Widget 6:*
 Neo4j is also used to generate the co-authorship graph. It is a shortest path graph with paths starting from a user selected faculty and ending with faculties in the favorite list.
 The paths consist of alternating faculty and publication nodes connected by the relationship “PUBLISH”. An interactive graph is built using pyvis and users can drag and highlight the nodes as well as zoom and pan.
+
+### *The Front End:*
+We used Dash to write the frontend of the application. There are dropdown menus and slider bars that receive user input
+and callback functions that update data displayed whenever the input changes.
+
 
 ## 7. Database Techniques
 The three database techniques used are indexing, view and constraint.
