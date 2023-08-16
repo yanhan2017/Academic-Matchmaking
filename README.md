@@ -1,10 +1,10 @@
 # Academic Matchmaking: Find Your Academic Advisor!
 
-### [Video Demo]
+## 1. [Video Demo]
 [Video Demo]: https://mediaspace.illinois.edu/media/t/1_5j8t4cjy
 ![Dashboard](https://github.com/yanhan2017/Academic-Matchmaking/assets/25209296/7dce0135-785f-448d-9ae9-b57b22b64d73)
 
-## 1. Purpose
+## 2. Purpose
 ### *Application Scenario*: 
 This application is intended to help students choose their ideal advisors when applying for graduate school based on their research interests.
 
@@ -21,11 +21,6 @@ Students who are applying for graduate schools and looking for potential advisor
 - Allowing the students to have access to a large and centralized database without concern about the connection intricacies and can directly query the database by clicking, adding, and deleting dropdown menu items. 
 
 - Simple, clean, and clear delivering manners in the user interface to render a straightforward menu of options for the students’ matching experiments.
-
-## 2. Demo
-Please check [this link] for a demo. 
-
-[this link]: https://mediaspace.illinois.edu/media/t/1_zibc66dw
 
 ## 3. Installation
 Before using this application, you need to have Python 3 installed and the academicworld database populated and running on MySQL, MongoDB and Neo4j. The following libraries are also needed:
