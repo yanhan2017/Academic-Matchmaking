@@ -1,5 +1,4 @@
 # Academic Matchmaking: Find Your Academic Advisor!
-by Team Jake_Yan
 
 ### [Video Demo]
 [Video Demo]: https://mediaspace.illinois.edu/media/t/1_5j8t4cjy
@@ -113,10 +112,3 @@ We also created three views in mySQL to store the KRC of all publications, facul
 ### *Constraint:*
 We added a UNIQUE constraint on the Neo4j database requiring that each fav_faculty node has a unique name to avoid having duplicate favorite faculties.
 If the constraint is violated when adding a new favorite faculty, the application will simply ignore the request.
-
-## 8. Contributions
-### *Yan*: 
-Most backend utilities, frontend of widgets 5 and 6, README. Total time spent is about 40 hours.
-
-### *Jake*:
-Most frontend widgets, integrating widgets into dashboard, README, demo video. Total time spent is about 25 hours.
