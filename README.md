@@ -1,6 +1,10 @@
 # Academic Matchmaking: Find Your Academic Advisor!
 by Team Jake_Yan
 
+### [Video Demo]
+[Video Demo]: https://mediaspace.illinois.edu/media/t/1_5j8t4cjy
+![Dashboard](https://github.com/yanhan2017/Academic-Matchmaking/assets/25209296/7dce0135-785f-448d-9ae9-b57b22b64d73)
+
 ## 1. Purpose
 ### *Application Scenario*: 
 This application is intended to help students choose their ideal advisors when applying for graduate school based on their research interests.
